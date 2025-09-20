@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
 import 'package:lab_clinicas_adm/src/bindings/lab_clinicas_application_binding.dart';
+import 'package:lab_clinicas_adm/src/core/pages/home/home_router.dart';
 import 'package:lab_clinicas_adm/src/core/pages/login/login_router.dart';
 import 'package:lab_clinicas_adm/src/core/pages/splash/splash_page.dart';
 import 'package:lab_clinicas_core/lab_clinicas_core.dart';
@@ -36,9 +37,8 @@ class LabClinicasAdm extends StatelessWidget {
           page: (_) => const SplashPage(), 
           path: '/',
           ),
-        FlutterGetItPageBuilder(page: (_) => const Text('Estou na home'), path: '/home'),
       ],
-      pages: const [LoginRouter()],
+      pages: const [LoginRouter(), HomeRouter()],
       );
   }
 }

@@ -1,14 +1,23 @@
 import 'package:asyncstate/asyncstate.dart' as asyncstate;
+import 'package:lab_clinicas_adm/src/core/models/patient/patient_information_form_model.dart';
 import 'package:lab_clinicas_adm/src/repositories/attendant_desk_assignment/attendant_desk_assignment_repository.dart';
+import 'package:lab_clinicas_adm/src/services/call_next_patient/call_next_patient_service.dart';
 import 'package:lab_clinicas_core/lab_clinicas_core.dart';
+import 'package:signals_flutter/signals_flutter.dart';
 
 class HomeController with MessageStateMixin {
-  final AttendantDeskAssignmentRepository _attendantDeskAssignmentRepository;
-
   HomeController({
     required AttendantDeskAssignmentRepository
     attendantDeskAssignmentRepository,
-  }) : _attendantDeskAssignmentRepository = attendantDeskAssignmentRepository;
+    required CallNextPatientService callNextPatientService,
+  }) : _attendantDeskAssignmentRepository = attendantDeskAssignmentRepository,
+       _callNextPatientService = callNextPatientService;
+
+  final AttendantDeskAssignmentRepository _attendantDeskAssignmentRepository;
+  final CallNextPatientService _callNextPatientService;
+  final _informationForm = signal<PatientInformationFormModel?>(null);
+
+  PatientInformationFormModel? get informationForm => _informationForm();
 
   Future<void> startService(int deskNumber) async {
     asyncstate.AsyncState.show();
@@ -21,8 +30,19 @@ class HomeController with MessageStateMixin {
         asyncstate.AsyncState.hide();
         showError('Erro ao iniciar Guichê');
       case Right():
-        asyncstate.AsyncState.hide();
-        showInfo('Registrou com sucesso');
+        final resultNextPatient = await _callNextPatientService.execute();
+        switch (resultNextPatient) {
+          case Left():
+            showError('Erro ao chamar proximo paciente');
+          case Right(value: final form?):
+            asyncstate.AsyncState.hide();
+            _informationForm.value = form;
+          case Right(value: _):
+            asyncstate.AsyncState.hide();
+            showInfo(
+              'Nenhum paciente para atender, pode ir tomar um cafezinho',
+            );
+        }
     }
   }
 }

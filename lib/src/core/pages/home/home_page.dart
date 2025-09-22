@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_getit/flutter_getit.dart';
 import 'package:lab_clinicas_adm/src/core/pages/home/home_controller.dart';
 import 'package:lab_clinicas_core/lab_clinicas_core.dart';
+import 'package:signals_flutter/signals_flutter.dart';
 import 'package:validatorless/validatorless.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,21 +13,25 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with MessagesViewMixin{
-
+class _HomePageState extends State<HomePage> with MessagesViewMixin {
   final formKey = GlobalKey<FormState>();
   final deskNumberEC = TextEditingController();
   final controller = Injector.get<HomeController>();
 
   @override
   void initState() {
-   messagesListener(controller);
+    messagesListener(controller);
+    effect(() {
+      if (controller.informationForm != null) {
+        print('paciente carregado.....');
+      }
+    });
     super.initState();
   }
 
   @override
   void dispose() {
-   deskNumberEC.dispose();
+    deskNumberEC.dispose();
     super.dispose();
   }
 
@@ -48,37 +53,42 @@ class _HomePageState extends State<HomePage> with MessagesViewMixin{
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [Text('Bem Vindo!', style: LabClinicasTheme.titleStyle),
-              const SizedBox(height: 32,),
-              Text('Preencha o número do guichê que voce está atendendo',
-              style: LabClinicasTheme.subtitleStyle,
-              ),
-              const SizedBox(height: 24,),
-              SizedBox(
-                width: sizeOf.width * 0.30,
-                child: TextFormField(
-                  controller: deskNumberEC,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  validator: Validatorless.multiple(
-                    [
+              children: [
+                Text('Bem Vindo!', style: LabClinicasTheme.titleStyle),
+                const SizedBox(height: 32),
+                Text(
+                  'Preencha o número do guichê que voce está atendendo',
+                  style: LabClinicasTheme.subtitleStyle,
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: sizeOf.width * 0.30,
+                  child: TextFormField(
+                    controller: deskNumberEC,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    validator: Validatorless.multiple([
                       Validatorless.required('Guichê obrigatório'),
                       Validatorless.number('Guichê deve ser um número'),
-
-                    ]
+                    ]),
+                    decoration: InputDecoration(
+                      label: Text('Número do Guichê'),
+                    ),
                   ),
-                  decoration: InputDecoration(label: Text('Número do Guichê')),
                 ),
-              ),
-              const SizedBox(height: 32,),
-              SizedBox(
-                height: 48,
-                width: sizeOf.width * 0.30,
-                child: ElevatedButton(onPressed: () {
-                  final valid = formKey.currentState?.validate() ?? false;
-                  if(valid){
-                    controller.startService(int.parse(deskNumberEC.text));
-                  }
-                }, child: Text('Chamar próximo paciente'))),
+                const SizedBox(height: 32),
+                SizedBox(
+                  height: 48,
+                  width: sizeOf.width * 0.30,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final valid = formKey.currentState?.validate() ?? false;
+                      if (valid) {
+                        controller.startService(int.parse(deskNumberEC.text));
+                      }
+                    },
+                    child: Text('Chamar próximo paciente'),
+                  ),
+                ),
               ],
             ),
           ),

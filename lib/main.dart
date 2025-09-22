@@ -6,6 +6,7 @@ import 'package:flutter_getit/flutter_getit.dart';
 import 'package:lab_clinicas_adm/src/bindings/lab_clinicas_application_binding.dart';
 import 'package:lab_clinicas_adm/src/core/pages/home/home_router.dart';
 import 'package:lab_clinicas_adm/src/core/pages/login/login_router.dart';
+import 'package:lab_clinicas_adm/src/core/pages/pre_checkin/pre_checkin_router.dart';
 import 'package:lab_clinicas_adm/src/core/pages/splash/splash_page.dart';
 import 'package:lab_clinicas_core/lab_clinicas_core.dart';
 
@@ -38,7 +39,7 @@ class LabClinicasAdm extends StatelessWidget {
           path: '/',
           ),
       ],
-      pages: const [LoginRouter(), HomeRouter()],
+      pages: const [LoginRouter(), HomeRouter(), PreCheckinRouter()],
       );
   }
 }

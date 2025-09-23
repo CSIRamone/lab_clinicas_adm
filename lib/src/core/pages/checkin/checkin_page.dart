@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
 import 'package:lab_clinicas_adm/src/core/models/patient/patient_information_form_model.dart';
-import 'package:lab_clinicas_adm/src/core/pages/pre_checkin/pre_checkin_controller.dart';
+import 'package:lab_clinicas_adm/src/core/pages/checkin/checkin_controller.dart';
+import 'package:lab_clinicas_adm/src/core/pages/checkin/widget/checkin_image_link.dart';
 import 'package:lab_clinicas_adm/src/shared/data_item.dart';
 import 'package:lab_clinicas_core/lab_clinicas_core.dart';
 import 'package:signals_flutter/signals_flutter.dart';
 
-class PreCheckinPage extends StatefulWidget {
-  const PreCheckinPage({super.key});
+class CheckinPage extends StatefulWidget {
+  const CheckinPage({super.key});
 
   @override
-  State<PreCheckinPage> createState() => _PreCheckinPageState();
+  State<CheckinPage> createState() => _CheckinPageState();
 }
 
-class _PreCheckinPageState extends State<PreCheckinPage>
-    with MessagesViewMixin {
-  final controller = Injector.get<PreCheckinController>();
+class _CheckinPageState extends State<CheckinPage> with MessagesViewMixin {
+  final controller = Injector.get<CheckinController>();
 
   @override
   void initState() {
@@ -25,11 +25,10 @@ class _PreCheckinPageState extends State<PreCheckinPage>
 
   @override
   Widget build(BuildContext context) {
+    var sizeOf = MediaQuery.sizeOf(context);
     final PatientInformationFormModel(:password, :patient) = controller
         .informationForm
         .watch(context)!;
-
-    var sizeOf = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: LabClinicasAppBar(),
       body: SingleChildScrollView(
@@ -70,7 +69,23 @@ class _PreCheckinPageState extends State<PreCheckinPage>
                     ),
                   ),
                 ),
-                SizedBox(height: 48),  
+                SizedBox(height: 48),
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: LabClinicasTheme.ligthOrangeColor,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  width: double.infinity,
+                  child: Text(
+                    'Cadastro',
+                    style: LabClinicasTheme.titleSmallStyle.copyWith(
+                      color: LabClinicasTheme.orangeColor,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 24),
                 DataItem(
                   label: 'Nome Paciente',
                   value: patient.name,
@@ -107,36 +122,47 @@ class _PreCheckinPageState extends State<PreCheckinPage>
                   value: patient.guardianIdentificationNumber,
                   padding: EdgeInsets.only(bottom: 24),
                 ),
-                SizedBox(height: 32),
-                Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 48,
-                        child: OutlinedButton(
-                          onPressed: () {
-                            controller.next();
-                          },
-                          child: Text('Chamar outra senha'),
-                        ),
-                      ),
+                SizedBox(height: 24),
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: LabClinicasTheme.ligthOrangeColor,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  width: double.infinity,
+                  child: Text(
+                    'Validar Imagens Exames',
+                    style: LabClinicasTheme.titleSmallStyle.copyWith(
+                      color: LabClinicasTheme.orangeColor,
+                      fontWeight: FontWeight.w900,
                     ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: SizedBox(
-                        height: 48,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacementNamed(
-                              '/checkin',
-                              arguments: controller.informationForm(),
-                            );
-                          },
-                          child: Text('Atender'),
-                        ),
-                      ),
+                  ),
+                ),
+                SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    CheckinImageLink(label: 'Carteirinha'),
+                    Column(
+                      children: [
+                        CheckinImageLink(label: 'Pedido Médico 1'),
+                        CheckinImageLink(label: 'Pedido Médico 2'),
+                        CheckinImageLink(label: 'Pedido Médico 3'),
+                      ],
                     ),
                   ],
+                ),
+                SizedBox(height: 16),
+
+                SizedBox(
+                  width: sizeOf.width * 0.70,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () {
+                     
+                    },
+                    child: Text('Finalizar Atendimento'),
+                  ),
                 ),
               ],
             ),

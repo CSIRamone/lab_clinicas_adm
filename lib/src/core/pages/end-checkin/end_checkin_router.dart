@@ -2,13 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_getit/flutter_getit.dart';
+import 'package:lab_clinicas_adm/src/core/pages/end-checkin/end_checkin_controller.dart';
 import 'package:lab_clinicas_adm/src/core/pages/end-checkin/end_checkin_page.dart';
 
 class EndCheckinRouter extends FlutterGetItPageRouter {
   const EndCheckinRouter({super.key});
 
   @override
-  List<Bind<Object>> get bindings => [];
+  List<Bind<Object>> get bindings => [
+    Bind.lazySingleton(
+      (i) => EndCheckinController(callNextPatientService: i()),
+    ),
+  ];
 
   @override
   String get routeName => '/end-checkin';

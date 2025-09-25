@@ -20,8 +20,10 @@ class _CheckinPageState extends State<CheckinPage> with MessagesViewMixin {
   @override
   void initState() {
     messagesListener(controller);
+
     effect((){
       if(controller.endProcess()){
+        
         Navigator.of(context).pushReplacementNamed('/end-checkin');
       }
 
